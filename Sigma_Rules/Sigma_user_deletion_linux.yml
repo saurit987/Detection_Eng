@@ -1,0 +1,22 @@
+title: Linux User deletion detection
+author: Saurit Mondal
+date: 2026-10-10
+status: test
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_adduser:
+      Image|endswith:
+        - '/userdel'
+        - '/deluser'
+    selection_sudo_adduser:
+      Image|endswith: '/sudo'
+      CommandLine|contains: 
+        - '/deluser'
+        - '/userdel'
+    condition: 1 of selection_*
+
+falsepositives: 
+    - Legitimate user using it
+level: high

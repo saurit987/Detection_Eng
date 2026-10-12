@@ -1,0 +1,26 @@
+title: Detection of windows firewall disabling activity
+author: Saurit Mondal
+date: 2026-10-11
+state: test
+logsource:
+  category: process_creation
+  product: windows
+
+detection:
+  selection_event:
+    eventID:
+      - '4950'
+      - '5052'
+      - '5031'
+      - '2003'
+      - '2004'
+      - '2005'
+  selection_ps:
+    CommandLine|re: '(^i)(Set-NetFirewallProfile|)'
+    CommandLine|re: '(^i)(Enabled False)'
+  
+  condition: selection_event or selection_ps
+
+level: high
+falsepositives:
+  - User trying to run some other CommandLine non-revent to disabling firewall

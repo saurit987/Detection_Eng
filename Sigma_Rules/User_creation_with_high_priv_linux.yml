@@ -1,0 +1,24 @@
+title: Detecting creation of high privileged user in linux
+author: Saurit Mondal
+date: 2026-10-11
+status: test
+
+logsource:
+    category: process_creation
+    product: linux
+
+detection:
+  selection_sudo:
+    Image|endswith:
+      - 'usermod'
+      - 'sudo'
+      - 'useradd'
+      - 'adduser'
+
+  selection_priv_group:
+    CommandLine|re: '(?i)(^|[[:space:]])(sudo|wheel|docker)([[:space:]]|$)'
+
+  selection_addition:
+    CommandLine|re: '(^|[[:space:]])-G([[:space:]]|$)|(^|[[:space:]])-aG([[:space:]]|$)'
+  
+  condition: selection_sudo and selection_priv_group and selection_addition

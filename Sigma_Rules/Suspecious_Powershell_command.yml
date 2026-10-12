@@ -1,0 +1,29 @@
+title: Suspecious command execution in windows powershell
+author: Saurit Mondal
+date: 2026-10-11
+id: XX_XX_XX
+modified: 2026-10-11
+status: test
+
+logsource:
+    category: process_creation
+    product: windows
+
+detection:
+    selection_img:
+        - Image|endswith:
+              - '\powershell.exe'
+              - '\pwsh.exe'
+        - OriginalFileName:
+              - 'PowerShell.EXE'
+              - 'pwsh.dll'
+    selection_command:
+      CommandLine||re: '(?i)[-\/](e|ec|en|enc|enco|encod|encode|encoded|encodedc|encodedco|encodedcom|encodedcomm|encodedcomma|encodedcomman|encodedcommand)\b'
+
+    condition: selection_img and selection_command
+
+
+level: high
+falsepositives:
+  - Legitimate use is using it
+
